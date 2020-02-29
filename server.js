@@ -15,10 +15,12 @@ RegisterCommand('setjob', (src, args) => {
 	const playerID = args[0];
 	const Job = args[1].toLowerCase();
 
-	for (let i = 0; i <= 32; i++) {
-		if (GetPlayerFromIndex(i) == playerID) {
+	const NumPlayerIndices = GetNumPlayerIndices();
+	for (let i = 0; i < NumPlayerIndices; i++) {
+		const playerFromIndex = GetPlayerFromIndex(i);
+		if (playerFromIndex == playerID) {
 			break;
-		} else if (i === 32 && GetPlayerFromIndex(i) != playerID) {
+		} else if (i == NumPlayerIndices - 1) {
 			emitNet('chat:addMessage', src, { args: ['SYSTEM', 'Invalid player ID.'] });
 			return;
 		}
@@ -40,10 +42,10 @@ RegisterCommand('setjob', (src, args) => {
 
 	for (let i = 0; i <= NumPlayerIdentifiers; i++) {
 		const playerIdentifier = GetPlayerIdentifier(playerID, i);
-		if (playerIdentifier.includes('steam')) {
+		if (playerIdentifier != null && playerIdentifier.includes('steam')) {
 			SteamHEX = playerIdentifier;
 			break;
-		} else if (i == NumPlayerIdentifiers && !playerIdentifier.includes('steam')) {
+		} else if (i == NumPlayerIdentifiers) {
 			emitNet('chat:addMessage', src, { args: ['SYSTEM', `Unable to set job for player ${playerName}.`] });
 			return;
 		}
