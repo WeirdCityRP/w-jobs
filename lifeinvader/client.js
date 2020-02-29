@@ -1,6 +1,6 @@
 Blips.LifeInvader = {
 	name: "Life Invader",
-	coordinates: [-1082.6339111328125, -259.37384033203125, 37.7633171081543],
+	coordinates: [-1081.94, -260.4, 37.8049],
 	color: 1,
 	blip: 457
 };
