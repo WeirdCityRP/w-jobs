@@ -1,6 +1,11 @@
 const Jobs = ['ems', 'pdm', 'sasp'];
 
 RegisterCommand( 'setjob', (src, args) => {
+	if (!IsPlayerAceAllowed( src, 'admin' )) {
+		emitNet( 'chat:addMessage', src, {args: ['SYSTEM', 'This command is only available for admins.']} );
+		return;
+	}
+
 	const playerID = args[0];
 	const Job = args[1].toLowerCase();
 
@@ -15,9 +20,6 @@ RegisterCommand( 'setjob', (src, args) => {
 	}
 
 	switch (true) {
-		case !IsPlayerAceAllowed( src, 'admin' ):
-			emitNet( 'chat:addMessage', src, {args: ['SYSTEM', 'This command is only available for admins.']} );
-			return;
 		case args.length !== 2:
 			emitNet( 'chat:addMessage', src, {args: ['SYSTEM', 'Invalid usage of command.']} );
 			return;
@@ -25,7 +27,7 @@ RegisterCommand( 'setjob', (src, args) => {
 			emitNet( 'chat:addMessage', src, {args: ['SYSTEM', 'Invalid player ID.']} );
 			return;
 		case !Jobs.includes(Job):
-			emitNet( 'chat:addMessage', src, {args: ['SYSTEM', 'Invalid job name.']} );
+			emitNet( 'chat:addMessage', src, {args: ['SYSTEM', 'Invalid job.']} );
 			return;
 		case IsPlayerAceAllowed(playerID, Job) == 1:
 			emitNet( 'chat:addMessage', src, {args: ['SYSTEM', `Player ${GetPlayerName(playerID)} already has ${Job.toUpperCase()} job.`]} );
@@ -42,7 +44,7 @@ RegisterCommand( 'setjob', (src, args) => {
 		if (playerIdentifier.includes('steam')) {
 			SteamHEX = playerIdentifier;
 			break;
-		} else {
+		} else if (i == NumPlayerIdentifiers && !playerIdentifier.includes('steam')) {
 			emitNet( 'chat:addMessage', src, {args: ['SYSTEM', `Unable to set job for player ${playerName}.`]} );
 			return;
 		}
