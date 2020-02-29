@@ -1,31 +1,30 @@
 const Jobs = ['ems', 'pdm', 'sasp'];
 
 RegisterCommand('setjob', (src, args) => {
-	if (!IsPlayerAceAllowed(src, 'admin')) {
-		emitNet('chat:addMessage', src, { args: ['SYSTEM', 'This command is only available for admins.'] });
-		return;
+	switch (true) {
+		case !IsPlayerAceAllowed(src, 'admin'):
+			emitNet('chat:addMessage', src, { args: ['SYSTEM', 'This command is only available for admins.'] });
+			return;
+		case args.length !== 2:
+			emitNet('chat:addMessage', src, { args: ['SYSTEM', 'Invalid usage of command.'] });
+			return;
+		default:
+			break;
 	}
 
 	const playerID = args[0];
 	const Job = args[1].toLowerCase();
 
-	let Players = [];
 	for (let i = 0; i <= 32; i++) {
-		const playerFromIndex = GetPlayerFromIndex(i);
-		if (playerFromIndex) {
-			Players.push(playerFromIndex);
-		} else {
+		if (GetPlayerFromIndex(i) == playerID) {
 			break;
+		} else if (i === 32 && GetPlayerFromIndex(i) != playerID) {
+			emitNet('chat:addMessage', src, { args: ['SYSTEM', 'Invalid player ID.'] });
+			return;
 		}
 	}
 
 	switch (true) {
-		case args.length !== 2:
-			emitNet('chat:addMessage', src, { args: ['SYSTEM', 'Invalid usage of command.'] });
-			return;
-		case !Players.includes(playerID):
-			emitNet('chat:addMessage', src, { args: ['SYSTEM', 'Invalid player ID.'] });
-			return;
 		case !Jobs.includes(Job):
 			emitNet('chat:addMessage', src, { args: ['SYSTEM', 'Invalid job.'] });
 			return;
